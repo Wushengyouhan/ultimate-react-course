@@ -38,15 +38,15 @@ function Logo() {
 }
 
 function Form({ onAddItems }) {
-  const [descrption, setDescription] = useState("");
+  const [description, setDescription] = useState("");
   const [quantity, setQuantity] = useState(1);
 
   function handleSubmit(e) {
     e.preventDefault();
 
-    if (!descrption) return;
+    if (!description) return;
 
-    const newItem = { descrption, quantity, packed: false, id: Date.now() };
+    const newItem = { description, quantity, packed: false, id: Date.now() };
     onAddItems(newItem);
 
     setDescription("");
@@ -69,7 +69,7 @@ function Form({ onAddItems }) {
       <input
         type="text"
         placeholder="Item..."
-        value={descrption}
+        value={description}
         onChange={(e) => setDescription(e.target.value)}
       />
       <button>Add</button>
@@ -78,10 +78,23 @@ function Form({ onAddItems }) {
 }
 
 function PackingList({ items, onDeleteItem, onToggleItem }) {
+  const [sortBy, setSortBy] = useState("input");
+
+  let sortedItems;
+  if (sortBy === "input") sortedItems = items;
+  else if (sortBy === "description")
+    sortedItems = [...items].sort((a, b) =>
+      a.description.localeCompare(b.description),
+    );
+  else if (sortBy === "packed")
+    sortedItems = [...items].sort(
+      (a, b) => Number(a.packed) - Number(b.packed),
+    );
+
   return (
     <div className="list">
       <ul>
-        {items.map((item) => (
+        {sortedItems.map((item) => (
           <Item
             item={item}
             key={item.id}
@@ -90,6 +103,13 @@ function PackingList({ items, onDeleteItem, onToggleItem }) {
           />
         ))}
       </ul>
+      <div className="actions">
+        <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+          <option value="input">Sort by input order</option>
+          <option value="description">Sort by description</option>
+          <option value="packed">Sort by packed status</option>
+        </select>
+      </div>
     </div>
   );
 }
