@@ -1,4 +1,26 @@
 import { useState } from "react";
+import PropTypes from "prop-types";
+
+const containerStyle = {
+  display: "flex",
+  alignItems: "center",
+  gap: "16px",
+};
+
+const starContainerStyle = {
+  display: "flex",
+};
+
+StarRating.propTypes = {
+  maxRating: PropTypes.number,
+  color: PropTypes.string,
+  size: PropTypes.number,
+  className: PropTypes.string,
+  messages: PropTypes.arrayOf(PropTypes.string),
+  defaultRating: PropTypes.number,
+  onSetRating: PropTypes.func,
+};
+
 export default function StarRating({
   maxRating = 5,
   color = "#fcc419",
@@ -8,16 +30,6 @@ export default function StarRating({
   defaultRating = 0,
   onSetRating,
 }) {
-  const containerStyle = {
-    display: "flex",
-    alignItems: "center",
-    gap: "16px",
-  };
-
-  const starContainerStyle = {
-    display: "flex",
-  };
-
   const textStyle = {
     lineHeight: "1",
     margin: "0",
@@ -37,9 +49,8 @@ export default function StarRating({
     <div style={containerStyle} className={className}>
       <div style={starContainerStyle}>
         {Array.from({ length: maxRating }).map((_, i) => (
-          <span>
+          <span key={i}>
             <Star
-              key={i}
               onRate={() => handleRating(i + 1)}
               full={tempRating ? tempRating >= i + 1 : rating >= i + 1}
               onHoverIn={() => setTempRating(i + 1)}
